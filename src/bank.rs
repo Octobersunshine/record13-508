@@ -18,6 +18,19 @@ impl QuestionBank {
         if input.score <= 0 {
             return Err("每题分值必须大于0".to_string());
         }
+        let content_trim = input.content.trim();
+        if content_trim.is_empty() {
+            return Err("题目内容不能为空".to_string());
+        }
+        let exists = self.questions.iter().any(|q| {
+            q.q_type == input.q_type && q.content.trim() == content_trim
+        });
+        if exists {
+            return Err(format!(
+                "题库中已存在相同内容的「{}」题目",
+                input.q_type.label()
+            ));
+        }
         let q: Question = input.into();
         self.questions.push(q.clone());
         Ok(q)
